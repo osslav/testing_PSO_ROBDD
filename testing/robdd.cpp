@@ -2,7 +2,7 @@
 
 //конструктор узла ROBDD, содержит основной алгоритм построения ROBDD
 //принимает вектор решений функции, указание на текущий отрезок в этой функции и индекс текущей переменной 
-Node::Node(const BoolVector& expr, int startBit, int lastBit, int indexVar_)		
+ROBDD::Node::Node(const BoolVector& expr, int startBit, int lastBit, int indexVar_)		
 {
 	static Node* currentHead = nullptr;											//указатель на корень дерева статический, записывается в начале реурсии
 	if (!currentHead)
@@ -39,7 +39,7 @@ Node::Node(const BoolVector& expr, int startBit, int lastBit, int indexVar_)
 	}
 }
 //рекурсивный метод, который вставит вместо временных вершин равные им уже созданные вершины
-void Node::insertEqualNode(const BoolVector& expr, int startBit, int lastBit)
+void ROBDD::Node::insertEqualNode(const BoolVector& expr, int startBit, int lastBit)
 {
 	if (this->isEndNode)														//если текущая вершины конечная, то выходим из функции
 		return;
@@ -82,7 +82,7 @@ void Node::insertEqualNode(const BoolVector& expr, int startBit, int lastBit)
 }
 
 //функция получения уже созданной вершины для фрагмента вектора 
-Node* Node::getEqualVector(const BoolVector& expr, int startBit, int lastBit, Node* headTree, int indexVar_)
+ROBDD::Node* ROBDD::Node::getEqualVector(const BoolVector& expr, int startBit, int lastBit, Node* headTree, int indexVar_)
 {
 	int lenth = lastBit - startBit + 1;								//проверка - существует ли такой же подвектор с нахождением его начальной позиции и длины(если такой существует)
 	
@@ -141,7 +141,7 @@ Node* Node::getEqualVector(const BoolVector& expr, int startBit, int lastBit, No
 }
 
 //функция проверки - есть ли уже созданная вершина для фрагмента вектора 
-bool Node::checkEqualVector(const BoolVector& expr, int startBit, int lastBit, Node* headTree, int indexVar_)
+bool ROBDD::Node::checkEqualVector(const BoolVector& expr, int startBit, int lastBit, Node* headTree, int indexVar_)
 {
 	int lenth = lastBit - startBit + 1;
 
@@ -160,7 +160,7 @@ bool Node::checkEqualVector(const BoolVector& expr, int startBit, int lastBit, N
 }
 
 //пропуск повторяющихся подвекторов в векторе (для дерева это случай right(u) = left(u))
-void Node::skipEqualSubtree(const BoolVector& expr, const int& startBit, int& lastBit, int& indexVar_)
+void ROBDD::Node::skipEqualSubtree(const BoolVector& expr, const int& startBit, int& lastBit, int& indexVar_)
 {
 	int lenth = lastBit - startBit + 1;
 	bool equalSubVector = true;
@@ -179,7 +179,7 @@ void Node::skipEqualSubtree(const BoolVector& expr, const int& startBit, int& la
 }
 
 //деструктор вершины(с удалением всех поддеревьев)
-Node::~Node() 
+ROBDD::Node::~Node()
 { 
 	if (left)
 		if (!left->countReuse)
@@ -195,7 +195,7 @@ Node::~Node()
 }
 
 //подсчет количества всех различных путей из текущей вершины до любой концевой вершины
-int Node::getCountWay()
+int ROBDD::Node::getCountWay()
 {
 	static int count = 0;
 	bool isStartNode = false;
@@ -221,7 +221,7 @@ int Node::getCountWay()
 }
 
 //получение всех решений ROBDD в виде векторов путем обхода слева
-std::vector<BoolVector>& Node::getVectors(std::vector<BoolVector>& currentVectors, int& indexCurrentVector, int& indexPosition)
+std::vector<BoolVector>& ROBDD::Node::getVectors(std::vector<BoolVector>& currentVectors, int& indexCurrentVector, int& indexPosition)
 {	
 	if (!isEndNode)
 	{
@@ -271,7 +271,7 @@ std::vector<BoolVector>& Node::getVectors(std::vector<BoolVector>& currentVector
 }
 
 //конструктор ROBDD
-ROBDD::ROBDD(const BoolVector& expr) 
+ROBDD::ROBDD(const BoolVector& expr)
 { 
 	if (expr.size() != 0)
 	{
@@ -289,7 +289,7 @@ ROBDD::ROBDD(const BoolVector& expr)
 };
 
 //получение всех решений ROBDD
-std::vector<BoolVector> ROBDD::getVectors() 
+std::vector<BoolVector> ROBDD::getVectors()
 { 
 	int lengthVector = head->getCountWay();
 	std::vector<BoolVector> solutions (lengthVector);
@@ -301,32 +301,31 @@ std::vector<BoolVector> ROBDD::getVectors()
 };
 
 //методы вывода в консоль
-std::ostream& operator <<(std::ostream& out, Node &node)
+void ROBDD::Node::output(std::ostream& out)
 {
 	static int level = -1;
 
 	level++;
-	if (node.isEndNode)
+	if (isEndNode)
 	{
 		for (int i = 0; i < level; i++)
 			out << "  ";
-		out << '\"' << node.value << '\"' << "                      adress: " << &node << '\n';
+		out << '\"' << value << '\"' << "                      adress: " << this << '\n';
 	}
 	else
 	{		
-		out << *(node.left);
+		left->output(out);
 		for (int i = 0; i < level; i++)
 			out << "  ";
-		out << node.indexVar << "                      adress: " << &node << '\n';
-		out << *(node.right);
+		out << indexVar << "                      adress: " << this << '\n';
+		right->output(out);
 
 	}
 	level--;
-	return out;
 }
 
 std::ostream& operator <<(std::ostream& out, ROBDD &graph)
 {	
-	out << *(graph.head);
+	graph.head->output(out);
 	return out;
 }

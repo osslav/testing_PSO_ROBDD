@@ -6,8 +6,8 @@ namespace pso
 	int getCountFitness(const std::vector<BoolVector>& solutions);
 
 	//алгоритм поиска максимально покрытия перебором
-	std::vector<BoolVector> maxFitnessSlowMethod(std::vector<BoolVector> solutions);
-	std::vector<BoolVector> maxFitnessSlowMethodTimer(std::vector<BoolVector> solutions, int& resultTimer);
+	std::vector<BoolVector> maxFitnessSlowMethod(const std::vector<BoolVector>& solutions);
+	std::vector<BoolVector> maxFitnessSlowMethodTimer(const std::vector<BoolVector>& solutions, int& resultTimer);
 
 	//проверка - покрывается ли один массив векторов другим массивом
 	bool coveredBy(const std::vector<BoolVector>& coveredVector, const std::vector<BoolVector>& originalVector);

@@ -90,6 +90,7 @@ int main()
 	//получение сокращенного массива тестовых случаев из графа
 	std::vector<BoolVector> ts = testGraph.getVectors();
 	std::cout << "Result robdd contains " << ts.size() << " vectors\n";
+	//printVectors(ts);
 	
 	//используя медленную функцию с перебором получаем оптимальный набор тестовых случаев(с выводом краткой информации и проверкой на правильность)	
 	/*
@@ -111,7 +112,7 @@ int main()
 		std::cout << "w = " << w << '\n';
 		for (int r = 5; r < 6; r += 1)
 		{
-			std::vector<BoolVector> psoRes = pso::psoMethodTimer(ts, 12, 15, w, r, 0, timer);
+			std::vector<BoolVector> psoRes = pso::psoMethodTimer(ts, 12, 1, w, r, 0, timer);
 			std::cout << "r = " << r << " : " << timer << "ms and " << psoRes.size() << " vectors\n";
 			if (pso::coveredBy(psoRes, ts))
 				std::cout << "Good.\n";

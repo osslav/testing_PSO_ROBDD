@@ -39,7 +39,7 @@ BoolVector::BoolVector(int count, int percentOnes)
 		return;
 	}
 }
-
+/*
 BoolVector::BoolVector(char c, unsigned long long num, int count)
 {
 	if (count < 0) throw errorCountLessZero;
@@ -54,7 +54,7 @@ BoolVector::BoolVector(char c, unsigned long long num, int count)
 		num >>= 8;
 	}
 
-}
+}*/
 
 BoolVector::BoolVector(int count, unsigned char* string, int countString)
 {
@@ -256,7 +256,7 @@ bool BoolVector::isOnesVector() const
 	return true;
 }
 
-BoolVector BoolVector::operator &(BoolVector term) const
+BoolVector BoolVector::operator &(const BoolVector& term) const
 {
 	if (memory_ > term.memory_)
 	{
@@ -274,7 +274,7 @@ BoolVector BoolVector::operator &(BoolVector term) const
 	}
 }
 
-void BoolVector::operator &=(BoolVector term)
+void BoolVector::operator &=(const BoolVector& term)
 {
 	if (memory_ > term.memory_)
 	{
@@ -297,7 +297,7 @@ void BoolVector::operator &=(BoolVector term)
 	}
 }
 
-BoolVector BoolVector::operator |(BoolVector term) const
+BoolVector BoolVector::operator |(const BoolVector& term) const
 {
 	if (memory_ > term.memory_)
 	{
@@ -314,7 +314,7 @@ BoolVector BoolVector::operator |(BoolVector term) const
 }
 
 
-void BoolVector::operator |=(BoolVector term)
+void BoolVector::operator |=(const BoolVector& term)
 {
 	if (memory_ > term.memory_)  for (int i = 0; i < term.memory_; i++) vector_[i + memory_ - term.memory_] |= term.vector_[i];
 	else
@@ -332,7 +332,7 @@ void BoolVector::operator |=(BoolVector term)
 }
 
 
-BoolVector BoolVector::operator ^(BoolVector term) const
+BoolVector BoolVector::operator ^(const BoolVector& term) const
 {
 	if (memory_ > term.memory_)
 	{
@@ -350,7 +350,7 @@ BoolVector BoolVector::operator ^(BoolVector term) const
 }
 
 
-void BoolVector::operator ^=(BoolVector term)
+void BoolVector::operator ^=(const BoolVector& term)
 {
 	if (memory_ > term.memory_)  for (int i = 0; i < term.memory_; i++) vector_[i + memory_ - term.memory_] ^= term.vector_[i];
 	else
@@ -511,6 +511,24 @@ BoolVector BoolVector::operator ~() const
 	return invVector;
 }
 
+bool BoolVector::operator ==(const BoolVector& temp) const
+{
+	if (memory_ != temp.memory_ || count_ != temp.count_)
+		return false;
+
+	unsigned char mask = ~0;
+	mask >>= memory_ * 8 - count_;
+	if ((vector_[0] & mask) != (temp.vector_[0] & mask))
+		return false;
+
+	for (int i = 1; i < memory_; i++)
+		if (vector_[i] != temp.vector_[i])
+			return false;
+
+	return true;
+
+}
+/*
 unsigned long long BoolVector::getNum()
 {
 	unsigned long long res = 0;
@@ -519,5 +537,63 @@ unsigned long long BoolVector::getNum()
 		res <<= 8;
 		res += vector_[i];
 	}
+	return res;
+}*/
+
+BoolVector BoolVector::operator +(const BoolVector& term)
+{
+	BoolVector remainder = (term & *this) << 1;
+	BoolVector result  = term ^ *this;
+
+	while (!remainder.isZerosVector())
+	{
+		BoolVector remainder_last = remainder;
+		remainder = (result & remainder_last) << 1;
+		result ^= remainder_last;
+	}
+	return result;
+}
+
+BoolVector BoolVector::operator -(const BoolVector& term)
+{
+	BoolVector one(term.size(), 0);
+	one.setOneInd(term.size() - 1);
+
+	return *this + (~term) + one;
+}
+
+BoolVector BoolVector::operator *(int termNum)
+{
+	unsigned char arr[2] = { termNum >> 8, termNum};
+	BoolVector vectorNumber(16, arr, 2);
+	/*
+	if (count < 0) throw errorCountLessZero;
+	count_ = count;
+	memory_ = (count + 7) / 8;
+
+	vector_ = new unsigned char[memory_];
+	unsigned char mask = ~0;
+	for (int i = memory_ - 1; i >= 0; i--)
+	{
+		vector_[i] = num & mask;
+		num >>= 8;
+	}*/
+
+	return *this * vectorNumber;
+}
+
+BoolVector BoolVector::operator *(const BoolVector& term)
+{
+	int sizeVector = size();
+	BoolVector res(sizeVector);
+	BoolVector vectorNumber = term;
+	for (int i = 0; i < sizeVector; i++)
+	{
+		if (this[i] == true)
+			res = res + vectorNumber;
+
+		vectorNumber <<= 1;
+	}
+
 	return res;
 }

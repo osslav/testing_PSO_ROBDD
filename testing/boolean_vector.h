@@ -33,7 +33,7 @@ class BoolVector
 
 public:
 	BoolVector(int count = DEFAULT_COUNT, int percentOnes = 0);
-	BoolVector(char c, unsigned long long num, int count);
+	//BoolVector(char c, unsigned long long num, int count); //убрать
 	BoolVector(int cout, unsigned char* string, int countString);
 	BoolVector(const char* stringVector);
 	BoolVector(const BoolVector& copy);
@@ -54,14 +54,14 @@ public:
 	bool isZerosVector() const;
 	bool isOnesVector() const;
 
-	BoolVector operator &(BoolVector term) const;
-	void operator &=(BoolVector term);
+	BoolVector operator &(const BoolVector& term) const;
+	void operator &=(const BoolVector& term);
 
-	BoolVector operator |(BoolVector term) const;
-	void operator |=(BoolVector term);
+	BoolVector operator |(const BoolVector& term) const;
+	void operator |=(const BoolVector& term);
 
-	BoolVector operator ^(BoolVector term) const;
-	void operator ^=(BoolVector term);
+	BoolVector operator ^(const BoolVector& term) const;
+	void operator ^=(const BoolVector& term);
 
 	BoolVector& operator =(const BoolVector& copy);
 
@@ -77,7 +77,18 @@ public:
 
 	BoolVector operator ~() const;
 
-	unsigned long long getNum();
+	bool operator ==(const BoolVector& temp) const;
+
+	//unsigned long long getNum(); //убрать
+
+	BoolVector operator +(const BoolVector& term);
+
+	BoolVector operator -(const BoolVector& term);
+
+	BoolVector operator *(int termNum);
+
+	BoolVector operator *(const BoolVector& term);
+
 };
 
 #endif
