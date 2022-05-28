@@ -13,6 +13,6 @@ namespace pso
 	bool coveredBy(const std::vector<BoolVector>& coveredVector, const std::vector<BoolVector>& originalVector);
 
 	//алгоритм оптимизации роя частиц
-	std::vector<BoolVector> psoMethod(const std::vector<BoolVector>& TS, const unsigned int maxIteration, const int m, const int w, const int r, const int mode);
-	std::vector<BoolVector> psoMethodTimer(const std::vector<BoolVector>& TS, const unsigned int maxIteration, const int m, const int coeff1, const int coeff2, const int mode, int& resultTimer);
+	std::vector<BoolVector> psoMethod(const std::vector<BoolVector>& TS, const unsigned int maxIteration, const int m, const int w, const int r);
+	std::vector<BoolVector> psoMethodTimer(const std::vector<BoolVector>& TS, const unsigned int maxIteration, const int m, const int coeff1, const int coeff2, int& resultTimer);
 }

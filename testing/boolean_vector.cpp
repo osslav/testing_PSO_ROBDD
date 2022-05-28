@@ -39,22 +39,7 @@ BoolVector::BoolVector(int count, int percentOnes)
 		return;
 	}
 }
-/*
-BoolVector::BoolVector(char c, unsigned long long num, int count)
-{
-	if (count < 0) throw errorCountLessZero;
-	count_ = count;
-	memory_ = (count + 7) / 8;
 
-	vector_ = new unsigned char[memory_];
-	unsigned char mask = ~0;
-	for (int i = memory_ - 1; i >= 0; i--)
-	{
-		vector_[i] = num & mask;
-		num >>= 8;
-	}
-
-}*/
 
 BoolVector::BoolVector(int count, unsigned char* string, int countString)
 {
@@ -589,7 +574,7 @@ BoolVector BoolVector::operator *(const BoolVector& term)
 	BoolVector vectorNumber = term;
 	for (int i = 0; i < sizeVector; i++)
 	{
-		if (this[i] == true)
+		if ((*this)[i] == true)
 			res = res + vectorNumber;
 
 		vectorNumber <<= 1;

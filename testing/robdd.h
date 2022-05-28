@@ -7,7 +7,7 @@
 #include <list>
 
 
-// класс ROBDD
+//класс ROBDD
 class ROBDD
 {
 private:
@@ -21,7 +21,7 @@ private:
 		Node* right = nullptr;				//узел, к которому ведет исходящее ребро, случай true
 
 		bool isEndNode = true;				//флаг - явялется ли узел концевым
-		unsigned int indexVar = NULL;		//индекс переменной в узле(используется если вершина не концевая) 
+		unsigned int indexVar = 0;			//индекс переменной в узле(используется если вершина не концевая) 
 		bool value;							//константное значение в узле(используется если вершина концевая) 
 
 		//вспомногательные функции для рекурсивного конструктора(подробнее о них в robdd.cpp)
@@ -63,7 +63,5 @@ public:
 
 	friend std::ostream& operator <<(std::ostream& out, ROBDD& graph);
 };
-
-
 
 #endif

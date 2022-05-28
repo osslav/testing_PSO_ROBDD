@@ -33,7 +33,6 @@ class BoolVector
 
 public:
 	BoolVector(int count = DEFAULT_COUNT, int percentOnes = 0);
-	//BoolVector(char c, unsigned long long num, int count); //убрать
 	BoolVector(int cout, unsigned char* string, int countString);
 	BoolVector(const char* stringVector);
 	BoolVector(const BoolVector& copy);
@@ -78,8 +77,6 @@ public:
 	BoolVector operator ~() const;
 
 	bool operator ==(const BoolVector& temp) const;
-
-	//unsigned long long getNum(); //убрать
 
 	BoolVector operator +(const BoolVector& term);
 

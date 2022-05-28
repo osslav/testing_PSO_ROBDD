@@ -184,7 +184,7 @@ bool pso::coveredBy(const std::vector<BoolVector>& coveredVector, const std::vec
 	return true;
 }
 
-std::vector<BoolVector> summ(std::vector<BoolVector> a, std::vector<BoolVector> b)
+std::vector<BoolVector> sum(std::vector<BoolVector> a, std::vector<BoolVector> b)
 {
 	while (!a.empty())								//записываем полученное глобальное лучшее в оптимальное покрытие
 	{
@@ -211,10 +211,10 @@ bool weFindInVector(std::vector<BoolVector> vector, BoolVector elem)
 //	m - минимальное число веторов, которое может содержать оптимальное тестовое покрытие
 //	w - коэффициент инерции скорости частицы
 //	k -  коэффициент определ€ющий зависимость скорости частицы от наилучшего текущего положени€ частицы
-std::vector<BoolVector> pso::psoMethod(const std::vector<BoolVector>& TS, const unsigned int maxIteration, const int m, const int w, const int r, const int mode)
+std::vector<BoolVector> pso::psoMethod(const std::vector<BoolVector>& TS, const unsigned int maxIteration, const int m, const int w, const int r)
 {
 	int countArg = TS[0].size();				//количество переменных в тестировании
-	int countVectors = TS.size();
+	long countVectors = TS.size();
 	std::vector<BoolVector> optimalTS;			//оптимальное тестовое покрытие(результат алгоритма заноситс€ сюда)
 	bool weFindOptimalTs = false;				//флаг завершени€ алгоритма - найдено ли оптимальное покрытие
 	while (!weFindOptimalTs)					//пока не найдено ли оптимальное покрытие - продолжаем алгоритм
@@ -233,7 +233,7 @@ std::vector<BoolVector> pso::psoMethod(const std::vector<BoolVector>& TS, const 
 		}
 		std::vector<BoolVector> localBest = X;									//инициаллизируем лучший локальный набор частиц(который будет равен первому, поскольку он пока что единственный) 
 		std::vector<BoolVector> globalBest = pso::maxFitnessSlowMethod(X);		//инициаллизируем лучший глобальный набор частиц(который будет равен максимальному покрытию в первом наборе)
-		if (pso::coveredBy(summ(globalBest, optimalTS), TS))					//если текущий набор частиц покрывает исходный набор то алгоритм закончен
+		if (pso::coveredBy(sum(globalBest, optimalTS), TS))					//если текущий набор частиц покрывает исходный набор то алгоритм закончен
 			weFindOptimalTs = true;
 
 		for (int counter = 0; counter < maxIteration && !weFindOptimalTs; counter++)			//в цикле запускаем движение частиц
@@ -255,14 +255,14 @@ std::vector<BoolVector> pso::psoMethod(const std::vector<BoolVector>& TS, const 
 				localBest = X;
 				globalBest = pso::maxFitnessSlowMethod(X);
 
-				if (pso::coveredBy(summ(globalBest, optimalTS), TS))					//если текущий набор частиц покрывает исходный набор то алгоритм закончен
+				if (pso::coveredBy(sum(globalBest, optimalTS), TS))					//если текущий набор частиц покрывает исходный набор то алгоритм закончен
 					weFindOptimalTs = true;
 			}
 		}
 
 		while (!globalBest.empty())								//записываем полученное глобальное лучшее в оптимальное покрытие
 		{
-			if (!weFindInVector(optimalTS, globalBest.back()))
+			if (true)//!weFindInVector(optimalTS, globalBest.back()))
 				optimalTS.push_back(globalBest.back());
 			globalBest.pop_back();
 		}
@@ -272,11 +272,11 @@ std::vector<BoolVector> pso::psoMethod(const std::vector<BoolVector>& TS, const 
 }
 
 // оболочка алгоритма оптимизации ро€ частиц с таймером
-std::vector<BoolVector> pso::psoMethodTimer(const std::vector<BoolVector>& TS, const unsigned int maxIteration, const int m, const int coeff1, const int coeff2, const int mode, int& resultTimer)
+std::vector<BoolVector> pso::psoMethodTimer(const std::vector<BoolVector>& TS, const unsigned int maxIteration, const int m, const int coeff1, const int coeff2, int& resultTimer)
 {
 	resultTimer = clock();
 
-	std::vector<BoolVector> optimalTS = pso::psoMethod(TS, maxIteration, m, coeff1, coeff2, mode);
+	std::vector<BoolVector> optimalTS = pso::psoMethod(TS, maxIteration, m, coeff1, coeff2);
 	
 	resultTimer = clock() - resultTimer;
 
